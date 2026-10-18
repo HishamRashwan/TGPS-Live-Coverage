@@ -2,17 +2,24 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import LiveHero from '../sections/LiveHero.astro';
-import { getAgenda, groupAgenda, EVENT_END } from '../lib/agenda';
+import { getAgenda, groupAgenda, EVENT_END, AGENDA_COLLECTION } from '../lib/agenda';
+import { wixHealthy } from '../lib/wix';
 
 export const prerender = false; // reads live Wix data
 
 // Dev-only time travel for testing: /?now=2026-10-25T10:30:00+03:00
 const override = import.meta.env.DEV ? Astro.url.searchParams.get('now') : null;
 const now = override ? Date.parse(override) : Date.now();
-const { live, now: nowList, upcoming, past } = groupAgenda(await getAgenda(now));
+const sessions = await getAgenda(now);
+const { live, now: nowList, upcoming, past } = groupAgenda(sessions);
 
 // CDN caches the rendered page for 30s, serving stale for 60s while it refreshes.
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=60');
+// If Wix failed and we have nothing to show, never cache that empty page.
+const failedEmpty = sessions.length === 0 && !wixHealthy(AGENDA_COLLECTION);
+Astro.response.headers.set(
+  'Cache-Control',
+  failedEmpty ? 'no-store' : 'public, s-maxage=30, stale-while-revalidate=60',
+);
 ---
 <Base title="Live Coverage | Global PropTech Summit 2026">
   <Header />

@@ -2,6 +2,12 @@
 import type { Session } from '../lib/agenda';
 interface Props { now: Session[]; upcoming: Session[]; past: Session[] }
 const { now, upcoming, past } = Astro.props;
+
+const MAX_LINES = 3; // people listed per row; the rest collapse into "+N more"
+const peopleOf = (s: Session) => [
+  ...s.speakers.map((p) => ({ ...p, kind: '' })),
+  ...s.moderators.map((p) => ({ ...p, kind: 'Moderator' })),
+];
 const tabs = [
   { id: 'now', label: 'Live Now', items: now },
   { id: 'upcoming', label: 'Upcoming', items: upcoming },
@@ -19,18 +25,45 @@ const tabs = [
     {tabs.map((t, i) => (
       <ul data-list={t.id} hidden={i !== 0} class="flex flex-col divide-y divide-white/15">
         {t.items.length === 0 && <li class="py-6 text-center text-sm text-white/60">Nothing here yet.</li>}
-        {t.items.map((s) => (
-          <li data-anim="row" class="flex items-center gap-4 py-3 first:pt-0">
-            {s.speakers[0]?.photo
-              ? <img src={s.speakers[0].photo} alt="" class="size-16 shrink-0 rounded-xl bg-white/10 object-cover object-top" loading="lazy" />
-              : <div class="grid size-16 shrink-0 place-items-center rounded-xl bg-white/10 p-2"><img src="/brand/logo-icon.png" alt="" class="w-full object-contain opacity-90" /></div>}
-            <div class="min-w-0 flex-1">
-              {s.status === 'live' && <p class="flex items-center gap-2 text-xs font-bold tracking-widest text-brand"><span class="size-2 animate-pulse rounded-full bg-brand"></span>ON AIR NOW</p>}
-              <p class="text-xs text-white/70">Day {s.day} · {s.label}{s.type && ` · ${s.type}`}</p>
-              <p class="font-bold leading-snug">{s.title}</p>
-            </div>
-          </li>
-        ))}
+        {t.items.map((s) => {
+          const people = peopleOf(s);
+          const faces = people.filter((p) => p.photo).slice(0, 4);
+          const more = people.length - 4; // people beyond the 4 photos in the tile
+          const shown = people.slice(0, MAX_LINES);
+          const hidden = people.length - shown.length;
+          return (
+            <li data-anim="row" class="flex items-start gap-4 py-3 first:pt-0">
+              {faces.length === 0 ? (
+                <div class="grid size-16 shrink-0 place-items-center rounded-xl bg-white/10 p-2"><img src="/brand/logo-icon.png" alt="" class="w-full object-contain opacity-90" /></div>
+              ) : (
+                <div class:list={['relative grid size-16 shrink-0 gap-px overflow-hidden rounded-xl bg-white/10', faces.length === 1 ? '' : 'grid-cols-2', faces.length >= 3 ? 'grid-rows-2' : '']}>
+                  {faces.map((p, i) => (
+                    <img src={p.photo} alt="" loading="lazy"
+                      class:list={['size-full object-cover object-top', faces.length === 3 && i === 0 ? 'row-span-2' : '']} />
+                  ))}
+                  {more > 0 && <span class="absolute bottom-0 end-0 grid size-8 place-items-center bg-black/65 text-xs font-bold">+{more + 1}</span>}
+                </div>
+              )}
+              <div class="min-w-0 flex-1">
+                {s.status === 'live' && <p class="flex items-center gap-2 text-xs font-bold tracking-widest text-brand"><span class="size-2 animate-pulse rounded-full bg-brand"></span>ON AIR NOW</p>}
+                <p class="text-xs text-white/70">Day {s.day} · {s.label}{s.type && ` · ${s.type}`}</p>
+                <p class="font-bold leading-snug">{s.title}</p>
+                {people.length > 0 && (
+                  <ul class="mt-1 space-y-0.5 text-xs text-white/70">
+                    {shown.map((p) => (
+                      <li class:list={[people.length <= 2 ? 'line-clamp-2' : 'line-clamp-1']}>
+                        <span class="font-semibold text-white/90">{p.name}</span>
+                        {p.role && <span> · {p.role}</span>}
+                        {p.kind && <span class="text-brand"> · {p.kind}</span>}
+                      </li>
+                    ))}
+                    {hidden > 0 && <li class="text-white/50">+{hidden} more</li>}
+                  </ul>
+                )}
+              </div>
+            </li>
+          );
+        })}
       </ul>
     ))}
   </div>

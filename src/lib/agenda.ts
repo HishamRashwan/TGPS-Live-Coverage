@@ -1,7 +1,8 @@
 import { wixItems, wixImage } from './wix';
 
 // Collection "2026" (current-year agenda). Times are Riyadh (UTC+3).
-const COLLECTION = '2026';
+export const AGENDA_COLLECTION = '2026';
+const COLLECTION = AGENDA_COLLECTION;
 const DAY_DATE: Record<number, string> = { 1: '2026-10-25', 2: '2026-10-26' };
 
 export type Person = { name: string; role: string; photo?: string };
@@ -26,8 +27,9 @@ export const EVENT_END = Date.parse('2026-10-26T20:00:00+03:00');
 const MONTHS =['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const pad = (n: number | string) => String(n).padStart(2, '0');
 const person = (s: any): Person => ({
-  name: String(s.title_fld ?? '').trim(),
-  role: String(s.imagealttext_fld ?? '').trim(),
+  // CMS text sometimes has stray newlines/spaces ("Regional Director\nand Asia"): collapse them.
+  name: String(s.title_fld ?? '').replace(/\s+/g, ' ').trim(),
+  role: String(s.imagealttext_fld ?? '').replace(/\s+/g, ' ').trim(),
   photo: wixImage(s.image_fld, 160),
 });
 
