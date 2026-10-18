@@ -1,29 +1,11 @@
 ---
 const MAIN = 'https://www.globalproptechsummit.com';
-const links = [
-  { label: 'Home', href: MAIN },
-  { label: 'Live', href: '/', active: true },
-  { label: 'About', href: `${MAIN}/about` },
-  { label: 'Speakers', href: `${MAIN}/speakers` },
-  { label: 'Partners', href: `${MAIN}/partners-2026` },
-  { label: 'News', href: `${MAIN}/news` },
-  { label: 'Gallery', href: `${MAIN}/gallery` },
-  { label: 'Contact', href: `${MAIN}/contact` },
-];
 ---
 <header class="sticky top-4 z-30 mx-auto w-[min(1280px,calc(100%-2rem))]">
   <nav class="glass flex items-center justify-between gap-4 !rounded-full px-5 py-3" aria-label="Main">
     <a href={MAIN} aria-label="Global PropTech Summit home">
       <img src="/brand/logo.png" alt="Global PropTech Summit" class="h-8 w-auto" />
     </a>
-    <ul class="hidden items-center gap-6 text-sm font-medium lg:flex">
-      {links.map((l) => (
-        <li>
-          <a href={l.href} aria-current={l.active ? 'page' : undefined}
-             class:list={['transition-colors hover:text-brand', l.active ? 'text-brand' : 'text-white/90']}>{l.label}</a>
-        </li>
-      ))}
-    </ul>
     <a href={`${MAIN}/register`} class="rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">REGISTER</a>
   </nav>
 </header>

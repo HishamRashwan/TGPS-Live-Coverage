@@ -23,9 +23,7 @@ const { live } = Astro.props;
     </>
   )}
   <div class="absolute left-4 top-4 flex items-center gap-3 sm:left-6 sm:top-6">
-    {live && <span class="flex items-center gap-2 rounded-lg bg-brand px-3 py-1.5 text-sm font-bold"><span class="size-2.5 animate-pulse rounded-full bg-white"></span>LIVE</span>}
-    <span class="hidden text-xs leading-tight text-white/90 sm:block">GPS Live Coverage<br />Riyadh, Saudi Arabia</span>
-  </div>
+    {live && <span class="flex items-center gap-2 rounded-lg bg-brand px-3 py-1.5 text-sm font-bold"><span class="size-2.5 animate-pulse rounded-full bg-white"></span>LIVE</span>}  </div>
   {live && (
     <div class="absolute inset-x-6 bottom-6 hidden sm:block">
       <p class="mb-1 inline-block rounded-t-md bg-brand px-3 py-0.5 text-[11px] font-bold tracking-widest">LIVE SESSION</p>
