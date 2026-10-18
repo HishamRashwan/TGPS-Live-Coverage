@@ -11,6 +11,8 @@ export type Session = {
   start: number; // epoch ms
   end: number;
   label: string; // "10:00 AM – 10:20 AM" (Riyadh time)
+  startLabel: string; // "10:00 AM"
+  dateLabel: string; // "26 OCT"
   title: string;
   type: string;
   description: string;
@@ -19,6 +21,9 @@ export type Session = {
   status: 'live' | 'upcoming' | 'past';
 };
 
+/** After this moment the event counts as over (end of Day 2, Riyadh time). */
+export const EVENT_END = Date.parse('2026-10-26T20:00:00+03:00');
+const MONTHS =['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const pad = (n: number | string) => String(n).padStart(2, '0');
 const person = (s: any): Person => ({
   name: String(s.title_fld ?? '').trim(),
@@ -48,12 +53,15 @@ export async function getAgenda(now = Date.now()): Promise<Session[]> {
       const [h, m] = new Date(ms + 3 * 3600_000).toISOString().slice(11, 16).split(':').map(Number);
       return `${h % 12 || 12}:${pad(m)} ${h < 12 ? 'AM' : 'PM'}`;
     };
+    const d = new Date(start + 3 * 3600_000);
     out.push({
       id: r._id,
       day,
       start,
       end,
       label: `${fmt(start)} – ${fmt(end)}`,
+      startLabel: fmt(start),
+      dateLabel: `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`,
       title: String(r.sessionName).trim(),
       type: String(r.sessionType ?? '').trim(),
       description: String(r.sessionDescriptionEn ?? '').trim(),

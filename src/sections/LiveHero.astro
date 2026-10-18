@@ -2,8 +2,8 @@
 import StreamPlayer from '../components/StreamPlayer.astro';
 import SchedulePanel from '../components/SchedulePanel.astro';
 import type { Session } from '../lib/agenda';
-interface Props { live?: Session; now: Session[]; upcoming: Session[]; past: Session[] }
-const { live, now, upcoming, past } = Astro.props;
+interface Props { live?: Session; now: Session[]; upcoming: Session[]; past: Session[]; eventOver: boolean }
+const { live, now, upcoming, past, eventOver } = Astro.props;
 ---
 <section data-hero class="mx-auto w-[min(1280px,calc(100%-2rem))] pb-16 pt-10 sm:pt-14">
   <div class="flex flex-col items-center gap-6 text-center">
@@ -18,8 +18,10 @@ const { live, now, upcoming, past } = Astro.props;
     </div>
   </div>
   <div class="mt-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
-    <StreamPlayer live={live} />
-    <SchedulePanel now={now} upcoming={upcoming} past={past} />
+    <StreamPlayer live={live} next={upcoming[0]} hasPast={past.length > 0} eventOver={eventOver} />
+    <div class="relative">
+      <SchedulePanel now={now} upcoming={upcoming} past={past} />
+    </div>
   </div>
 </section>
 <script>

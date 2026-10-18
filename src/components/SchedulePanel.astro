@@ -8,11 +8,11 @@ const tabs = [
   { id: 'past', label: 'Past', items: past },
 ];
 ---
-<aside class="glass flex max-h-[34rem] flex-col gap-4 !rounded-[28px] p-4 sm:p-5 lg:max-h-none" data-schedule data-anim="panel">
+<aside class="glass flex max-h-[34rem] flex-col gap-4 !rounded-[28px] p-4 sm:p-5 lg:absolute lg:inset-0 lg:max-h-none" data-schedule data-anim="panel">
   <div role="tablist" aria-label="Sessions" class="grid grid-cols-3 gap-2">
     {tabs.map((t, i) => (
       <button role="tab" type="button" data-tab={t.id} aria-selected={i === 0}
-        class="rounded-full bg-white/10 px-3 py-2 text-sm font-medium transition aria-selected:bg-brand aria-selected:font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">{t.label}</button>
+        class="rounded-full bg-white/10 px-3 py-2 text-sm font-medium transition hover:bg-brand aria-selected:bg-brand aria-selected:font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">{t.label}</button>
     ))}
   </div>
   <div class="min-h-0 flex-1 overflow-y-auto pe-1">

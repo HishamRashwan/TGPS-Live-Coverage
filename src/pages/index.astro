@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import LiveHero from '../sections/LiveHero.astro';
-import { getAgenda, groupAgenda } from '../lib/agenda';
+import { getAgenda, groupAgenda, EVENT_END } from '../lib/agenda';
 
 export const prerender = false; // reads live Wix data
 
@@ -17,6 +17,6 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=30, stale-while-re
 <Base title="Live Coverage | Global PropTech Summit 2026">
   <Header />
   <main>
-    <LiveHero live={live} now={nowList} upcoming={upcoming} past={past} />
+    <LiveHero live={live} now={nowList} upcoming={upcoming} past={past} eventOver={now > EVENT_END} />
   </main>
 </Base>

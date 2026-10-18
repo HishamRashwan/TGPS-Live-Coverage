@@ -1,8 +1,20 @@
 ---
 import { stream } from '../data/stream';
 import type { Session } from '../lib/agenda';
-interface Props { live?: Session }
-const { live } = Astro.props;
+interface Props { live?: Session; next?: Session; hasPast?: boolean; eventOver?: boolean }
+const { live, next, hasPast, eventOver } = Astro.props;
+
+// Poster text follows the agenda: first session before the event, "resumes" between days,
+// nothing while live (badge + caption cover it), "ended" after the last session.
+const note = live
+  ? null
+  : next
+    ? { label: hasPast ? 'RESUMES' : 'STREAM OPENS', text: `${next.dateLabel} · ${next.startLabel}` }
+    : eventOver
+      ? { label: 'EVENT ENDED', text: 'Thank you for joining' }
+      : hasPast
+        ? { label: 'NEXT SESSIONS', text: 'Schedule coming soon' }
+        : { label: 'STREAM OPENS SOON', text: '' };
 ---
 <div data-anim="player" class="glass relative aspect-video overflow-hidden !rounded-[28px]">
   {stream.videoId ? (
@@ -14,12 +26,14 @@ const { live } = Astro.props;
       <img src={stream.poster} alt="" class="absolute inset-0 h-full w-full object-cover" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-navy/40"></div>
       <div class="absolute inset-0 bg-gradient-to-r from-brand/25 to-black/25"></div>
-      <div class="absolute inset-0 grid place-items-center text-center">
-        <div>
-          <p class="text-sm tracking-[6px] text-white/80">{live ? 'STREAM STARTING' : 'STREAM OPENS'}</p>
-          <p class="mt-1 text-2xl font-bold sm:text-5xl">25 OCT · 9:00 AM</p>
+      {note && (
+        <div class="absolute inset-0 grid place-items-center text-center">
+          <div>
+            <p class="text-sm tracking-[6px] text-white/80">{note.label}</p>
+            {note.text && <p class="mt-1 text-2xl font-bold sm:text-5xl">{note.text}</p>}
+          </div>
         </div>
-      </div>
+      )}
     </>
   )}
   <div class="absolute left-4 top-4 flex items-center gap-3 sm:left-6 sm:top-6">
