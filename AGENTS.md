@@ -5,7 +5,7 @@ Runs on its own subdomain (`live.globalproptechsummit.com`); the main site is Wi
 Must look and feel like https://globalproptechsummit.com. No live-feed/admin: content is schedule + stream + creative components.
 
 ## Stack
-Astro 7 (static) · TypeScript strict · Tailwind v4 (`src/styles/global.css` `@theme`) · GSAP + ScrollTrigger · Lenis (optional) · Playwright · Vercel (static).
+Astro 7 (SSR page for live Wix data, rest static, @astrojs/vercel) · TypeScript strict · Tailwind v4 (`src/styles/global.css` `@theme`) · GSAP + ScrollTrigger · Lenis (optional) · Playwright · Vercel (static).
 React only for stateful islands (not installed yet; `npx astro add react` when needed). No Three.js unless a design needs it.
 
 ## Commands

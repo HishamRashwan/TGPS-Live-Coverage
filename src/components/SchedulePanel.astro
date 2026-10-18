@@ -1,42 +1,50 @@
 ---
-import { sessions } from '../data/schedule';
+import type { Session } from '../lib/agenda';
+interface Props { now: Session[]; upcoming: Session[]; past: Session[] }
+const { now, upcoming, past } = Astro.props;
 const tabs = [
-  { id: 'now', label: 'Live Now' },
-  { id: 'upcoming', label: 'Upcoming' },
-  { id: 'demand', label: 'On Demand' },
+  { id: 'now', label: 'Live Now', items: now },
+  { id: 'upcoming', label: 'Upcoming', items: upcoming },
+  { id: 'past', label: 'Past', items: past },
 ];
-const groups = (s: (typeof sessions)[number]) => (s.status === 'live' ? 'now' : s.status === 'upcoming' ? 'now upcoming' : 'demand');
 ---
-<aside class="glass flex flex-col gap-4 !rounded-[28px] p-4 sm:p-5" data-schedule data-anim="panel">
+<aside class="glass flex max-h-[34rem] flex-col gap-4 !rounded-[28px] p-4 sm:p-5 lg:max-h-none" data-schedule data-anim="panel">
   <div role="tablist" aria-label="Sessions" class="grid grid-cols-3 gap-2">
     {tabs.map((t, i) => (
       <button role="tab" type="button" data-tab={t.id} aria-selected={i === 0}
         class="rounded-full bg-white/10 px-3 py-2 text-sm font-medium transition aria-selected:bg-brand aria-selected:font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">{t.label}</button>
     ))}
   </div>
-  <ul class="flex flex-col divide-y divide-white/15">
-    {sessions.map((s) => (
-      <li data-groups={groups(s)} data-anim="row" class="flex items-center gap-4 py-3 first:pt-0">
-        <img src={s.speaker.photo} alt="" class="size-20 shrink-0 rounded-xl bg-white/10 object-cover object-top" loading="lazy" />
-        <div class="min-w-0 flex-1">
-          {s.status === 'live' && <p class="flex items-center gap-2 text-xs font-bold tracking-widest text-brand"><span class="size-2 rounded-full bg-brand"></span>ON AIR NOW</p>}
-          <p class="text-xs text-white/70">{s.start} – {s.end} AST</p>
-          <p class="font-bold leading-snug">{s.title}</p>
-        </div>
-      </li>
+  <div class="min-h-0 flex-1 overflow-y-auto pe-1">
+    {tabs.map((t, i) => (
+      <ul data-list={t.id} hidden={i !== 0} class="flex flex-col divide-y divide-white/15">
+        {t.items.length === 0 && <li class="py-6 text-center text-sm text-white/60">Nothing here yet.</li>}
+        {t.items.map((s) => (
+          <li data-anim="row" class="flex items-center gap-4 py-3 first:pt-0">
+            {s.speakers[0]?.photo
+              ? <img src={s.speakers[0].photo} alt="" class="size-16 shrink-0 rounded-xl bg-white/10 object-cover object-top" loading="lazy" />
+              : <div class="size-16 shrink-0 rounded-xl bg-white/10"></div>}
+            <div class="min-w-0 flex-1">
+              {s.status === 'live' && <p class="flex items-center gap-2 text-xs font-bold tracking-widest text-brand"><span class="size-2 animate-pulse rounded-full bg-brand"></span>ON AIR NOW</p>}
+              <p class="text-xs text-white/70">Day {s.day} · {s.label} AST{s.type && ` · ${s.type}`}</p>
+              <p class="font-bold leading-snug">{s.title}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
     ))}
-  </ul>
-  <a href="https://www.globalproptechsummit.com/speakers" class="mt-auto rounded-full border border-brand px-5 py-3 text-center font-bold transition hover:bg-brand">View Full Program →</a>
+  </div>
+  <a href="https://www.globalproptechsummit.com/speakers" class="mt-auto rounded-full border border-brand px-5 py-3 text-center font-bold transition hover:bg-brand">View Speakers →</a>
 </aside>
 <script>
   document.querySelectorAll<HTMLElement>('[data-schedule]').forEach((root) => {
     const tabs = root.querySelectorAll<HTMLButtonElement>('[data-tab]');
-    const rows = root.querySelectorAll<HTMLElement>('[data-groups]');
-    const show = (id: string) => {
-      tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === id)));
-      rows.forEach((r) => (r.hidden = !r.dataset.groups!.split(' ').includes(id)));
-    };
-    tabs.forEach((t) => t.addEventListener('click', () => show(t.dataset.tab!)));
-    show('now');
+    const lists = root.querySelectorAll<HTMLElement>('[data-list]');
+    tabs.forEach((t) =>
+      t.addEventListener('click', () => {
+        tabs.forEach((x) => x.setAttribute('aria-selected', String(x === t)));
+        lists.forEach((l) => (l.hidden = l.dataset.list !== t.dataset.tab));
+      }),
+    );
   });
 </script>

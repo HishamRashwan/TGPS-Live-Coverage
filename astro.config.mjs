@@ -1,10 +1,11 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import vercel from '@astrojs/vercel';
 
-// Static output; deployed on Vercel (zero-config Astro preset).
-// ponytail: static only. Add @astrojs/cloudflare adapter when an SSR route/API is needed.
+// Static by default; pages that read live Wix data opt out with `export const prerender = false`.
 export default defineConfig({
   site: 'https://live.globalproptechsummit.com',
+  adapter: vercel(),
   vite: { plugins: [tailwindcss()] },
 });
