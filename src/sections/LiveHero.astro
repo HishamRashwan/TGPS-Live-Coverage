@@ -2,13 +2,13 @@
 import StreamPlayer from '../components/StreamPlayer.astro';
 import SchedulePanel from '../components/SchedulePanel.astro';
 ---
-<section class="mx-auto w-[min(1280px,calc(100%-2rem))] pb-16 pt-10 sm:pt-14">
+<section data-hero class="mx-auto w-[min(1280px,calc(100%-2rem))] pb-16 pt-10 sm:pt-14">
   <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
     <div>
-      <h1 class="text-5xl font-extrabold leading-none sm:text-7xl">GPS <span class="text-brand">LIVE</span></h1>
-      <p class="mt-3 text-sm tracking-[6px] text-white/80 sm:text-lg">PEOPLE. IDEAS. TECHNOLOGY. REAL IMPACT.</p>
+      <h1 data-anim="title" class="text-5xl font-extrabold leading-none sm:text-7xl">GPS <span class="text-brand">LIVE</span></h1>
+      <p data-anim="tagline" class="mt-3 text-sm tracking-[6px] text-white/80 sm:text-lg">PEOPLE. IDEAS. TECHNOLOGY. REAL IMPACT.</p>
     </div>
-    <div class="flex items-center gap-6 border-white/25 lg:border-s lg:ps-6">
+    <div data-anim="meta" class="flex items-center gap-6 border-white/25 lg:border-s lg:ps-6">
       <div>
         <p class="text-xl font-medium">25 – 26 OCT 2026</p>
         <p class="text-xs tracking-widest text-white/70">RIYADH, SAUDI ARABIA</p>
@@ -21,3 +21,15 @@ import SchedulePanel from '../components/SchedulePanel.astro';
     <SchedulePanel />
   </div>
 </section>
+<script>
+  import { init } from '../animations/hero';
+
+  let cleanup: (() => void) | undefined;
+  const start = () => {
+    cleanup?.();
+    const root = document.querySelector<HTMLElement>('[data-hero]');
+    if (root) cleanup = init(root);
+  };
+  document.addEventListener('astro:page-load', start);
+  document.addEventListener('astro:before-swap', () => cleanup?.());
+</script>

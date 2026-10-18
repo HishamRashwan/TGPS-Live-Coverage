@@ -3,7 +3,7 @@ import { stream } from '../data/stream';
 import { sessions } from '../data/schedule';
 const live = sessions.find((s) => s.status === 'live');
 ---
-<div class="glass relative aspect-video overflow-hidden !rounded-[28px]">
+<div data-anim="player" class="glass relative aspect-video overflow-hidden !rounded-[28px]">
   {stream.videoId ? (
     <iframe class="absolute inset-0 h-full w-full" title="Live stream"
       src={`https://www.youtube-nocookie.com/embed/${stream.videoId}?autoplay=1&rel=0`}
