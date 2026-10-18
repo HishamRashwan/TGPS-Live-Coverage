@@ -23,7 +23,7 @@ const tabs = [
           <li data-anim="row" class="flex items-center gap-4 py-3 first:pt-0">
             {s.speakers[0]?.photo
               ? <img src={s.speakers[0].photo} alt="" class="size-16 shrink-0 rounded-xl bg-white/10 object-cover object-top" loading="lazy" />
-              : <div class="size-16 shrink-0 rounded-xl bg-white/10"></div>}
+              : <div class="grid size-16 shrink-0 place-items-center rounded-xl bg-white/10 p-2"><img src="/brand/logo-icon.png" alt="" class="w-full object-contain opacity-90" /></div>}
             <div class="min-w-0 flex-1">
               {s.status === 'live' && <p class="flex items-center gap-2 text-xs font-bold tracking-widest text-brand"><span class="size-2 animate-pulse rounded-full bg-brand"></span>ON AIR NOW</p>}
               <p class="text-xs text-white/70">Day {s.day} · {s.label}{s.type && ` · ${s.type}`}</p>
