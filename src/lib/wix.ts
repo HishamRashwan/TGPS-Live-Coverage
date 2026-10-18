@@ -25,8 +25,13 @@ export async function wixItems(collection: string): Promise<any[]> {
   }
 }
 
-/** wix:image://v1/<id>/name.png#... -> https://static.wixstatic.com/media/<id> */
-export function wixImage(uri?: string): string | undefined {
+/**
+ * wix:image://v1/<id>/name.png#... -> https://static.wixstatic.com/media/<id>
+ * With `size`, Wix resizes to a square crop anchored at the top (originals are ~500 KB).
+ */
+export function wixImage(uri?: string, size?: number): string | undefined {
   const m = uri?.match(/^wix:image:\/\/v1\/([^/#]+)/);
-  return m ? `https://static.wixstatic.com/media/${m[1]}` : undefined;
+  if (!m) return undefined;
+  const base = `https://static.wixstatic.com/media/${m[1]}`;
+  return size ? `${base}/v1/fill/w_${size},h_${size},al_t,q_80,enc_auto/photo.png` : base;
 }

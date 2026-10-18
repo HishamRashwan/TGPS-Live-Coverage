@@ -23,7 +23,7 @@ const pad = (n: number | string) => String(n).padStart(2, '0');
 const person = (s: any): Person => ({
   name: String(s.title_fld ?? '').trim(),
   role: String(s.imagealttext_fld ?? '').trim(),
-  photo: wixImage(s.image_fld),
+  photo: wixImage(s.image_fld, 160),
 });
 
 // day1 is a tags field; accept "Day 1", ["Day 1"], "25 Oct" etc.
@@ -40,7 +40,7 @@ export async function getAgenda(now = Date.now()): Promise<Session[]> {
   for (const r of rows) {
     const day = dayOf(r.day1);
     const t = String(r.startTime ?? '').match(/(\d{1,2}):(\d{2})/);
-    if (!day || !t || !r.sessionName || r.published === false) continue;
+    if (!day || !t || !r.sessionName || r.published !== true) continue;
     const start = Date.parse(`${DAY_DATE[day]}T${pad(t[1])}:${t[2]}:00+03:00`);
     const end = start + (Number(r.durationInMinutes) || 30) * 60_000;
     const fmt = (ms: number) => new Date(ms + 3 * 3600_000).toISOString().slice(11, 16);
@@ -66,7 +66,7 @@ export function groupAgenda(sessions: Session[]) {
   const live = sessions.filter((s) => s.status === 'live');
   const upcoming = sessions.filter((s) => s.status === 'upcoming');
   return {
-    live: live[0],
+    live: live.find((s) => !/break|end of day/i.test(s.type + s.title)) ?? live[0],
     now: [...live, ...upcoming.slice(0, 3)],
     upcoming,
     past: sessions.filter((s) => s.status === 'past').reverse(),
