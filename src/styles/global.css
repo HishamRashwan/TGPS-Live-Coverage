@@ -26,6 +26,13 @@ html {
 }
 body { margin: 0; min-height: 100dvh; }
 
+/* Tailwind v4 resets buttons to the default cursor; restore the pointer. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+[role="tab"] {
+  cursor: pointer;
+}
+
 .glass {
   background: linear-gradient(213deg, rgb(255 255 255 / 0.02) 0%, rgb(255 255 255 / 0.21) 100%);
   backdrop-filter: blur(var(--blur-glass));
