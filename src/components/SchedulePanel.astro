@@ -26,7 +26,7 @@ const tabs = [
               : <div class="size-16 shrink-0 rounded-xl bg-white/10"></div>}
             <div class="min-w-0 flex-1">
               {s.status === 'live' && <p class="flex items-center gap-2 text-xs font-bold tracking-widest text-brand"><span class="size-2 animate-pulse rounded-full bg-brand"></span>ON AIR NOW</p>}
-              <p class="text-xs text-white/70">Day {s.day} · {s.label} AST{s.type && ` · ${s.type}`}</p>
+              <p class="text-xs text-white/70">Day {s.day} · {s.label}{s.type && ` · ${s.type}`}</p>
               <p class="font-bold leading-snug">{s.title}</p>
             </div>
           </li>
@@ -34,6 +34,7 @@ const tabs = [
       </ul>
     ))}
   </div>
+  <p class="text-center text-xs text-white/60">All times are Riyadh time</p>
   <a href="https://www.globalproptechsummit.com/speakers" class="mt-auto rounded-full border border-brand px-5 py-3 text-center font-bold transition hover:bg-brand">View Speakers →</a>
 </aside>
 <script>

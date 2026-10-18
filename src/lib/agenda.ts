@@ -10,7 +10,7 @@ export type Session = {
   day: number;
   start: number; // epoch ms
   end: number;
-  label: string; // "10:00 – 10:20"
+  label: string; // "10:00 AM – 10:20 AM" (Riyadh time)
   title: string;
   type: string;
   description: string;
@@ -43,7 +43,11 @@ export async function getAgenda(now = Date.now()): Promise<Session[]> {
     if (!day || !t || !r.sessionName || r.published !== true) continue;
     const start = Date.parse(`${DAY_DATE[day]}T${pad(t[1])}:${t[2]}:00+03:00`);
     const end = start + (Number(r.durationInMinutes) || 30) * 60_000;
-    const fmt = (ms: number) => new Date(ms + 3 * 3600_000).toISOString().slice(11, 16);
+    // 12-hour Riyadh (UTC+3) time, e.g. "2:05 PM"
+    const fmt = (ms: number) => {
+      const [h, m] = new Date(ms + 3 * 3600_000).toISOString().slice(11, 16).split(':').map(Number);
+      return `${h % 12 || 12}:${pad(m)} ${h < 12 ? 'AM' : 'PM'}`;
+    };
     out.push({
       id: r._id,
       day,
