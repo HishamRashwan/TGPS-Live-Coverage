@@ -1,0 +1,37 @@
+---
+import { stream } from '../data/stream';
+import { sessions } from '../data/schedule';
+const live = sessions.find((s) => s.status === 'live');
+---
+<div class="glass relative aspect-video overflow-hidden !rounded-[28px]">
+  {stream.videoId ? (
+    <iframe class="absolute inset-0 h-full w-full" title="Live stream"
+      src={`https://www.youtube-nocookie.com/embed/${stream.videoId}?autoplay=1&rel=0`}
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+  ) : (
+    <>
+      <img src={stream.poster} alt="" class="absolute inset-0 h-full w-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-navy/40"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-brand/25 to-black/25"></div>
+      <div class="absolute inset-0 grid place-items-center text-center">
+        <div>
+          <p class="text-sm tracking-[6px] text-white/80">STREAM OPENS</p>
+          <p class="mt-1 text-2xl font-bold sm:text-5xl">25 OCT · 09:00 AST</p>
+        </div>
+      </div>
+    </>
+  )}
+  <div class="absolute left-4 top-4 flex items-center gap-3 sm:left-6 sm:top-6">
+    <span class="flex items-center gap-2 rounded-lg bg-brand px-3 py-1.5 text-sm font-bold"><span class="size-2.5 animate-pulse rounded-full bg-white"></span>LIVE</span>
+    <span class="hidden text-xs leading-tight text-white/90 sm:block">GPS Live Coverage<br />Riyadh, Saudi Arabia</span>
+  </div>
+  {live && (
+    <div class="absolute inset-x-6 bottom-6 hidden sm:block">
+      <p class="mb-1 inline-block rounded-t-md bg-brand px-3 py-0.5 text-[11px] font-bold tracking-widest">LIVE SESSION</p>
+      <div class="glass !rounded-2xl px-4 py-3">
+        <h2 class="text-lg font-bold sm:text-2xl">{live.title}</h2>
+        <p class="text-sm text-white/75">{live.blurb}</p>
+      </div>
+    </div>
+  )}
+</div>

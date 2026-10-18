@@ -1,13 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import LiveHero from '../sections/LiveHero.astro';
 ---
 <Base title="Live Coverage | Global PropTech Summit 2026">
-  <main class="grid min-h-dvh place-items-center bg-gradient-to-b from-black to-navy p-6">
-    <section class="glass max-w-xl p-10 text-center">
-      <img src="/brand/logo.png" alt="Global PropTech Summit" class="mx-auto mb-8 h-10" />
-      <p class="tracking-[6px] text-brand">LIVE COVERAGE</p>
-      <h1 class="mt-3 text-4xl font-light">Scaling Intelligence</h1>
-      <p class="mt-2 text-white/70">25 – 26 Oct 2026 · Riyadh</p>
-    </section>
+  <Header />
+  <main>
+    <LiveHero />
   </main>
 </Base>
