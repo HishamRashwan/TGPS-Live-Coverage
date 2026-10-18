@@ -23,20 +23,20 @@ html {
   background: #0b1418 url("/brand/bg-gradient.jpg") center / cover fixed no-repeat;
   color: var(--color-paper);
   font-family: var(--font-sans);
-  color-scheme: dark; /* dark native controls and scrollbars by default */
 }
 
-/* Site-wide scrollbars: thin, rounded, brand orange (#ff5001 at 70%) on a transparent track. */
-* {
+/* Internal scroll areas only (add `scroll-thin`); the page scrollbar stays the browser default.
+   Thin, rounded, white at low opacity on a transparent track. */
+.scroll-thin {
   scrollbar-width: thin;
-  scrollbar-color: rgb(255 80 1 / 0.7) transparent;
+  scrollbar-color: rgb(255 255 255 / 0.35) transparent;
 }
 /* Fallback for browsers without scrollbar-color (older Safari). */
 @supports not (scrollbar-color: auto) {
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgb(255 80 1 / 0.7); border-radius: 999px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--color-brand); }
+  .scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scroll-thin::-webkit-scrollbar-track { background: transparent; }
+  .scroll-thin::-webkit-scrollbar-thumb { background: rgb(255 255 255 / 0.35); border-radius: 999px; }
+  .scroll-thin::-webkit-scrollbar-thumb:hover { background: rgb(255 255 255 / 0.6); }
 }
 body { margin: 0; min-height: 100dvh; }
 
