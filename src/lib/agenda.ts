@@ -5,7 +5,7 @@ export const AGENDA_COLLECTION = '2026';
 const COLLECTION = AGENDA_COLLECTION;
 const DAY_DATE: Record<number, string> = { 1: '2026-10-25', 2: '2026-10-26' };
 
-export type Person = { name: string; role: string; photo?: string };
+export type Person = { honorific: string; name: string; role: string; photo?: string };
 export type Session = {
   id: string;
   day: number;
@@ -26,12 +26,20 @@ export type Session = {
 export const EVENT_END = Date.parse('2026-10-26T20:00:00+03:00');
 const MONTHS =['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const pad = (n: number | string) => String(n).padStart(2, '0');
-const person = (s: any): Person => ({
+// "H.E. Dr. Abdullah Alghamdi" -> honorific "H.E. Dr.", name "Abdullah Alghamdi"
+const HONORIFICS = /^((?:(?:H\.?E\.?|H\.?R\.?H\.?|Eng\.|Dr\.|Mr\.|Mrs\.|Ms\.|Prof\.|Arch\.)\s+)+)(.+)$/i;
+
+const person = (s: any): Person => {
   // CMS text sometimes has stray newlines/spaces ("Regional Director\nand Asia"): collapse them.
-  name: String(s.title_fld ?? '').replace(/\s+/g, ' ').trim(),
-  role: String(s.imagealttext_fld ?? '').replace(/\s+/g, ' ').trim(),
-  photo: wixImage(s.image_fld, 160),
-});
+  const full = String(s.title_fld ?? '').replace(/\s+/g, ' ').trim();
+  const m = full.match(HONORIFICS);
+  return {
+    honorific: m ? m[1].trim() : '',
+    name: m ? m[2].trim() : full,
+    role: String(s.imagealttext_fld ?? '').replace(/\s+/g, ' ').trim(),
+    photo: wixImage(s.image_fld, 160),
+  };
+};
 
 // day1 is a tags field; accept "Day 1", ["Day 1"], "25 Oct" etc.
 function dayOf(v: unknown): number {
